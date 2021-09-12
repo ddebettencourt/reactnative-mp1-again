@@ -9,7 +9,12 @@ const names = Object.keys(nameToPic);
 
 export default function GameScreen() {
   // TODO: Declare and initialize state variables here, using "useState".
-
+  const [score, setScore] = useState(0)
+  const [name, setName] = useState("")
+  const [correctImageState, setCorrectImage] = useState("")
+  const [nameOptions, setNameOptions] = useState([])
+  const [correctNameState, setCorrectName] = useState("")
+  const [madeSelection, setMadeSelection] = useState(0)
   // State for the timer is handled for you.
   const [timeLeft, setTimeLeft] = useState(5000);
 
@@ -17,8 +22,9 @@ export default function GameScreen() {
   const countDown = () => {
     if (timeLeft > 0) {
       // Time still left, so decrement time state variable
-      setTimeLeft(timeLeft - 10);
+      setTimeLeft(timeLeft - 100);
     } else {
+      getNextRound();
       // Time has expired
       // TODO: update appropriate state variables
     }
@@ -46,15 +52,24 @@ export default function GameScreen() {
     // TODO: Update state here.
 
     setTimeLeft(5000);
+    setCorrectImage(correctImage);
+    setNameOptions(nameOptions);
+    setCorrectName(correctName);
   };
 
   // Called when user taps a name option.
   // TODO: Update correct # and total # state values.
-  const selectedNameChoice = (index) => {};
+  const selectedNameChoice = (index) => {
+    console.log(index, nameOptions[index])
+    if (nameOptions[index] === correctNameState){
+      setScore(score + 1);
+    }
+    setMadeSelection(madeSelection + 1);
+  };
 
   // Call the countDown() method every 10 milliseconds.
   useEffect(() => {
-    const timer = setInterval(() => countDown(), 10);
+    const timer = setInterval(() => countDown(), 100);
     return function cleanup() {
       clearInterval(timer);
     };
@@ -67,6 +82,7 @@ export default function GameScreen() {
       getNextRound();
     },
     [
+      madeSelection
       /* TODO: Your State Variable Goes Here */
     ]
   );
@@ -83,7 +99,9 @@ export default function GameScreen() {
         onPress={() => selectedNameChoice(j)}
       >
         <Text style={styles.buttonText}>
-          {/* TODO: Use something from state here. */}
+          {/* TODO: Use something from state here. */
+            nameOptions[i]
+          }
         </Text>
       </TouchableOpacity>
     );
@@ -94,7 +112,19 @@ export default function GameScreen() {
   // Style & return the view.
   return (
     <View>
-      {/* TODO: Build out your UI using Text and Image components. */}
+      <Image 
+        source={correctImageState}
+        style={styles.image}
+      />
+      {/* TODO: Build out your UI using Text and Image components. */
+      <Text style={styles.timerText}>Time Left: {timeLeft/1000}</Text>
+      
+      }
+      <Text style={styles.scoreText}>Score: {score}</Text>
+      {nameButtons[0]}
+      {nameButtons[1]}
+      {nameButtons[2]}
+      {nameButtons[3]}
       {/* Hint: What does the nameButtons list above hold? 
           What types of objects is this list storing?
           Try to get a sense of what's going on in the for loop above. */}
